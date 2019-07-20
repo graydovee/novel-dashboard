@@ -84,6 +84,7 @@
         padding: 1% 5%;
         background-color: cornflowerblue;
         color: white;
+        border-left:1px solid black;
     }
 
     .odd{
