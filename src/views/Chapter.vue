@@ -1,7 +1,11 @@
 <template>
     <div>
         <bookContent v-for="chapter in chapters" :key="chapter.id" :chapter="chapter"></bookContent>
-        <button @click="getNextPage" id="nextPage">下一章</button>
+        <div @click="getNextPage" id="nextPage">
+            <p>
+                点击获取下一章
+            </p>
+        </div>
     </div>
 </template>
 
@@ -94,11 +98,16 @@
 	}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     #nextPage{
         width: 100%;
-        height: 50px;
+        height: 50vh;
         border: 0;
         background-color: antiquewhite;
+
+        p{
+            font-size: 30px;
+            text-align: center;
+        }
     }
 </style>

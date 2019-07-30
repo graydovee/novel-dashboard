@@ -20,7 +20,7 @@
     }
     .title{
         text-align: center;
-        padding-top: 30px;
+        padding: 30px 10% 0 10%;
     }
     .content{
         white-space: pre-wrap;

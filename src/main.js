@@ -8,7 +8,7 @@ import qs from 'qs'
 Vue.config.productionTip = false
 
 Vue.prototype.$host = function (uri) {
-  let host = "http://www.graydove.cn/"
+  let host = "https://www.graydove.cn/"
   return host + uri
 }
 
