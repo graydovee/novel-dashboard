@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/table'
+            redirect: '/novelList'
         },
         {
             path: '/',
@@ -15,20 +15,24 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
-                    path: '/table',
+                    path: '/novelList',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/NovelList.vue'),
                     meta: { title: '小说列表' }
                 },
                 {
-                    path: '/form',
+                    path: '/rexList',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/RexList.vue'),
+                    meta: { title: '爬虫规则列表' }
+                },
+                {
+                    path: '/spiderForm',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/SpiderForm.vue'),
                     meta: { title: '爬取小说' }
                 },
                 {
-                    // 国际化组件
-                    path: '/i18n',
-                    component: () => import(/* webpackChunkName: "i18n" */ '../components/page/I18n.vue'),
-                    meta: { title: '国际化' }
+                    path: '/RexForm',
+                    component: () => import(/* webpackChunkName: "form" */ '../components/page/RexForm.vue'),
+                    meta: { title: '新增规则' }
                 },
                 {
                     path: '/404',

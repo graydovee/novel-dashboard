@@ -58,12 +58,22 @@ export default {
             items: [
                 {
                     icon: 'el-icon-lx-cascades',
-                    index: 'table',
+                    index: 'novelList',
                     title: '小说列表'
                 },
+				{
+					icon: 'el-icon-lx-cascades',
+					index: 'rexList',
+					title: '爬虫规则列表'
+				},
+				{
+					icon: 'el-icon-lx-calendar',
+					index: 'RexForm',
+					title: '新增规则'
+				},
                 {
                     icon: 'el-icon-lx-calendar',
-                    index: 'form',
+                    index: 'spiderForm',
                     title: '爬取小说'
                 }
             ]

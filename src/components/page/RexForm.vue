@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-calendar"></i> 爬取
+                    <i class="el-icon-lx-calendar"></i> 规则
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -16,16 +16,14 @@
                     <el-form-item label="表单名称">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="编码">
-                        <el-select v-model="form.encode" placeholder="请选择">
-                            <el-option key="utf-8" label="UTF-8" value="UTF-8"></el-option>
-                            <el-option key="gbk" label="GBK" value="GBK"></el-option>
-                        </el-select>
+                    <el-form-item label="表单名称">
+                        <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="规则">
-                        <el-select v-model="form.matchRexId" placeholder="请选择">
-                            <el-option v-for="item in rex" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                        </el-select>
+                    <el-form-item label="表单名称">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="表单名称">
+                        <el-input v-model="form.name"></el-input>
                     </el-form-item>
 
                     <el-form-item>
