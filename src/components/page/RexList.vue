@@ -8,38 +8,20 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="handle-box">
-                <el-button
-                        type="primary"
-                        icon="el-icon-delete"
-                        class="handle-del mr10"
-                        @click="delAllSelection"
-                >批量删除</el-button>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-            </div>
             <el-table
-                    :data="tableData"
+                    :data="rex"
                     border
                     class="table"
                     ref="multipleTable"
                     header-cell-class-name="table-header"
                     @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="info" label="介绍"></el-table-column>
                 <el-table-column prop="contentRex" label="内容匹配规则"></el-table-column>
                 <el-table-column prop="titleRex" label="标题匹配规则"></el-table-column>
-                <el-table-column prop="nextPageRex" label="下一章匹配规则"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                                :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="nextPageRex" label="下章匹配规则"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -56,26 +38,25 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
-                <el-pagination
-                        background
-                        layout="total, prev, pager, next"
-                        :current-page="query.pageIndex"
-                        :page-size="query.pageSize"
-                        :total="pageTotal"
-                        @current-change="handlePageChange"
-                ></el-pagination>
-            </div>
         </div>
 
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
+            <el-form ref="form" :model="form" label-width="100px">
+                <el-form-item label="名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="介绍">
+                    <el-input v-model="form.info"></el-input>
+                </el-form-item>
+                <el-form-item label="内容匹配规则">
+                    <el-input v-model="form.contentRex"></el-input>
+                </el-form-item>
+                <el-form-item label="标题匹配规则">
+                    <el-input v-model="form.titleRex"></el-input>
+                </el-form-item>
+                <el-form-item label="下章匹配规则">
+                    <el-input v-model="form.nextPageRex"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -88,17 +69,10 @@
 
 <script>
 	export default {
-		name: 'basetable',
+		name: 'rexTable',
 		data() {
 			return {
-				query: {
-					address: '',
-					name: '',
-					pageIndex: 1,
-					pageSize: 10
-				},
-				tableData: [],
-				multipleSelection: [],
+				rex:[],
 				delList: [],
 				editVisible: false,
 				pageTotal: 0,
@@ -108,20 +82,14 @@
 			};
 		},
 		created() {
-			this.getData();
+			this.getRex();
 		},
 		methods: {
-			// 获取 easy-mock 的模拟数据
-			getData() {
-				this.$axios.get("/book").then(res => {
-					this.tableData = res.data.data;
-					this.pageTotal = res.pageTotal || 50;
+			// 获取数据
+			getRex() {
+				this.$axios.get("/admin/rex").then(res => {
+					this.rex = res.data.data;
 				});
-			},
-			// 触发搜索按钮
-			handleSearch() {
-				this.$set(this.query, 'pageIndex', 1);
-				this.getData();
 			},
 			// 删除操作
 			handleDelete(index, row) {
@@ -130,24 +98,13 @@
 					type: 'warning'
 				})
 				.then(() => {
-					this.$message.success('删除成功');
-					this.tableData.splice(index, 1);
+					this.$axios.delete("/admin/rex?id=" + row.id).then(res => {
+						this.rex = res.data.data;
+						this.$message.success('删除成功');
+						this.getRex();
+					})
 				})
 				.catch(() => {});
-			},
-			// 多选操作
-			handleSelectionChange(val) {
-				this.multipleSelection = val;
-			},
-			delAllSelection() {
-				const length = this.multipleSelection.length;
-				let str = '';
-				this.delList = this.delList.concat(this.multipleSelection);
-				for (let i = 0; i < length; i++) {
-					str += this.multipleSelection[i].name + ' ';
-				}
-				this.$message.error(`删除了${str}`);
-				this.multipleSelection = [];
 			},
 			// 编辑操作
 			handleEdit(index, row) {
@@ -158,14 +115,13 @@
 			// 保存编辑
 			saveEdit() {
 				this.editVisible = false;
-				this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-				this.$set(this.tableData, this.idx, this.form);
+                this.$axios.post('/admin/rex',this.form).then(data=>{
+                    this.$message.success(`修改成功`);
+                    this.getRex();
+                }).catch(err=>{
+                    this.$message.error('修改失败！');
+                })
 			},
-			// 分页导航
-			handlePageChange(val) {
-				this.$set(this.query, 'pageIndex', val);
-				this.getData();
-			}
 		}
 	};
 </script>

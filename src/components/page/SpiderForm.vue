@@ -10,11 +10,14 @@
         <div class="container">
             <div class="form-box">
                 <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="表单名称">
-                        <el-input v-model="form.name"></el-input>
+                    <el-form-item label="书名">
+                        <el-input v-model="form.bookName"></el-input>
                     </el-form-item>
-                    <el-form-item label="表单名称">
-                        <el-input v-model="form.name"></el-input>
+                    <el-form-item label="作者">
+                        <el-input v-model="form.authorName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="首章地址">
+                        <el-input v-model="form.url"></el-input>
                     </el-form-item>
                     <el-form-item label="编码">
                         <el-select v-model="form.encode" placeholder="请选择">
@@ -29,8 +32,8 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="primary" @click="getRex">开始爬取</el-button>
-                        <el-button>取消</el-button>
+                        <el-button type="primary" @click="onSubmit">开始爬取</el-button>
+                        <el-button @click="reset">取消</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -44,26 +47,37 @@ export default {
     data() {
         return {
             form:{
-                bookName: '',
-                authorName: '',
-                url:'',
+                bookName: '牧神记',
+                authorName: '宅猪',
+                url:'http://www.biquge001.com/Book/16/16935/12799783.html',
                 encode:'',
-                matchRexId: 0,
+                matchRexId: '',
             },
             rex:[]
         };
     },
     created(){
-        this.getRex();
+    	this.getRex();
     },
     methods: {
         onSubmit() {
-            this.$message.success('提交成功！');
+			this.$axios.post('/admin/book',this.form).then(res=>{
+				this.$message.success("正在爬取！")
+			})
         },
-        getRex() {
-            this.$axios.token().get("/admin/rex").then(res => {
-                this.rex = res.data.data;
-            });
+		getRex() {
+			this.$axios.get("/admin/rex").then(res => {
+				this.rex = res.data.data;
+			});
+		},
+        reset(){
+        	this.form = {
+				bookName: '',
+				authorName: '',
+				url:'',
+				encode:'',
+				matchRexId: '',
+			}
         }
     },
 };
