@@ -1,12 +1,19 @@
-<template>
-  <div id="app">
-    <router-view/>
-  </div>
-</template>
 
+<template>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+</template>
+<script>
+export default {
+    name: 'App',
+    mounted(){
+    	this.$axios.token();
+    }
+}
+</script>
 <style>
-  *{
-    padding: 0;
-    margin: 0;
-  }
+    @import "./assets/css/main.css";
+    @import "./assets/css/color-dark.css";     /*深色主题*/
+    /*@import "./assets/css/theme-green/color-green.css";   浅绿色主题*/
 </style>
