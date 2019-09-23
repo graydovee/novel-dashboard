@@ -9,6 +9,12 @@
         </div>
         <div class="container">
             <div class="handle-box">
+                <el-button
+                        type="primary"
+                        icon="el-icon-refresh"
+                        class="mr10"
+                        @click="refresh"
+                >刷新</el-button>
                 <el-input v-model="findStr" placeholder="书名或作者名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
@@ -59,6 +65,12 @@ export default {
             this.$axios.get("/book").then(res => {
                 this.book = res.data.data;
             });
+        },
+        refresh(){
+			this.$axios.get("/book").then(res => {
+				this.book = res.data.data;
+				this.$message.success("刷新成功！")
+			});
         },
         // 触发搜索按钮
         handleSearch() {

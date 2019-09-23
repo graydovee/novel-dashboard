@@ -8,13 +8,19 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div class="handle-box">
+                <el-button
+                        type="primary"
+                        icon="el-icon-refresh"
+                        @click="refresh"
+                >刷新</el-button>
+            </div>
             <el-table
                     :data="rex"
                     border
                     class="table"
                     ref="multipleTable"
                     header-cell-class-name="table-header"
-                    @selection-change="handleSelectionChange"
             >
                 <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
@@ -91,6 +97,12 @@
 					this.rex = res.data.data;
 				});
 			},
+            refresh(){
+				this.$axios.get("/admin/rex").then(res => {
+					this.rex = res.data.data;
+					this.$message.success("刷新成功！")
+				});
+            },
 			// 删除操作
 			handleDelete(index, row) {
 				// 二次确认删除

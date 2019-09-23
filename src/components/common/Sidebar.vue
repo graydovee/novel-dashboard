@@ -56,6 +56,11 @@ export default {
         return {
             collapse: false,
             items: [
+				{
+					icon: 'el-icon-lx-home',
+					index: 'dashboard',
+					title: '系统首页'
+				},
                 {
                     icon: 'el-icon-lx-cascades',
                     index: 'novelList',

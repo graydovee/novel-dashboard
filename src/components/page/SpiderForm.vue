@@ -29,6 +29,12 @@
                         <el-select v-model="form.matchRexId" placeholder="请选择">
                             <el-option v-for="item in rex" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
+                        <el-button
+                                type="primary"
+                                icon="el-icon-refresh"
+                                class="refresh"
+                                @click="refresh"
+                        >刷新</el-button>
                     </el-form-item>
 
                     <el-form-item>
@@ -60,6 +66,12 @@ export default {
     	this.getRex();
     },
     methods: {
+		refresh(){
+			this.$axios.get("/admin/rex").then(res => {
+				this.rex = res.data.data;
+				this.$message.success("刷新成功！")
+			});
+		},
         onSubmit() {
 			this.$axios.post('/admin/book',this.form).then(res=>{
 				this.$message.success("正在爬取！")
@@ -82,3 +94,8 @@ export default {
     },
 };
 </script>
+<style>
+    .refresh{
+        margin-left: 10px;
+    }
+</style>

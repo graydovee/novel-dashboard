@@ -1,12 +1,30 @@
 import axios from 'axios';
 import qs from 'qs'
 import jwt from 'jsonwebtoken'
+import Vue from 'vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.timeout = 15000;
 // axios.defaults.withCredentials = true;   // axios 默认不发送cookie，需要全局设置true发送cookie
 
+axios.interceptors.response.use(response=>{
+    if (response.status === 200) {
+        return Promise.resolve(response);
+    } else {
+        return Promise.reject(response);
+    }
+},error => {
+    if(error.response.status === 401){
+        Vue.prototype.$router.push("/login");
+        console.log("login invalid");
+    }
+    return Promise.resolve(error);
+})
+
 const $axios = {
+    get_axios(){
+        return axios;
+    },
     host(url){
         const host = 'http://localhost:8088';
         if(!url.startsWith("/"))
@@ -52,20 +70,24 @@ const $axios = {
         return $axios;
     },
     refresh(){
-        let param = {
-            refresh_token: localStorage.refresh_token,
-            grant_type: 'refresh_token'
-        }
-        this.$axios.basic().post("/oauth/token",this.param).then(res=>{
-            let data = res.data;
-            localStorage.access_token = data.access_token;
-            localStorage.refresh_token = data.refresh_token;
+        if(localStorage.refresh_token){
+            let param = {
+                refresh_token: localStorage.refresh_token,
+                grant_type: 'refresh_token'
+            }
 
-            localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
-            this.$axios.token(data.access_token);
-        }).catch(err=>{
-            console.log(err)
-        })
+            this.basic().post("/oauth/token",param).then(res=>{
+                let data = res.data;
+                localStorage.access_token = data.access_token;
+                localStorage.refresh_token = data.refresh_token;
+
+                localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
+                console.log(data.access_token);
+                this.token(data.access_token);
+            }).catch(err=>{
+                console.log(err)
+            })
+        }
     }
 };
 

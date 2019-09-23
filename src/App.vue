@@ -7,8 +7,8 @@
 <script>
 export default {
     name: 'App',
-    mounted(){
-    	this.$axios.token();
+    created(){
+    	this.$axios.refresh();
     }
 }
 </script>

@@ -92,7 +92,7 @@ export default {
             this.fullscreen = !this.fullscreen;
         }
     },
-    mounted() {
+    created() {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
