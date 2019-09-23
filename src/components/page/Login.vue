@@ -52,14 +52,12 @@ export default {
                         localStorage.access_token = data.access_token;
                         localStorage.refresh_token = data.refresh_token;
 
-                        this.$axios.token(data.access_token);
-
-                        console.log(data.access_token);
 
                         localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
                         this.$message.success('登录成功');
                         this.$router.push('/');
                     }).catch(err=>{
+						console.error(err);
                         this.$message.error('登录失败');
                     })
                 } else {
@@ -108,10 +106,5 @@ export default {
     width: 100%;
     height: 36px;
     margin-bottom: 10px;
-}
-.login-tips {
-    font-size: 12px;
-    line-height: 30px;
-    color: #fff;
 }
 </style>

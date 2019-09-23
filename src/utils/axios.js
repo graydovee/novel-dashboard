@@ -1,22 +1,24 @@
 import axios from 'axios';
 import qs from 'qs'
 import jwt from 'jsonwebtoken'
+import router from '../router/index'
 
-const api = axios.create({
-    timeout: 10000,
-    withCredentials:true    // axios 默认不发送cookie，需要全局设置true发送cookie
-})
-api.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.timeout = 15000;
+// axios.defaults.withCredentials = true;   // axios 默认不发送cookie，需要全局设置true发送cookie
 
-api.interceptors.request.use(conf => {
+axios.interceptors.request.use(conf => {
         //请求带token
-        conf.headers['Authorization'] = 'Bearer ' + localStorage.access_token;
+        if(!localStorage.access_token.startsWith('Basic'))
+            conf.headers['Authorization'] = 'Bearer ' + localStorage.access_token;
+        else
+            conf.headers['Authorization'] = localStorage.access_token;
         return conf
     },
     error => ({ status: 0, msg: error.message })
 )
 //请求返回拦截
-api.interceptors.response.use(response => {
+axios.interceptors.response.use(response => {
         return Promise.resolve(response).then(checkCode)
     },
     error => {
@@ -30,7 +32,8 @@ const checkStatus = (res) => {
     switch (res.status)
     {
         case 401 :{        //登录过期
-            console.log('登录过期')
+            console.log('登录过期，刷新令牌');
+            $axios.refresh();
             break;
         }
         default:
@@ -41,27 +44,40 @@ const checkStatus = (res) => {
 // 后台自定义 code错误处理
 const checkCode = (res) => {
     if(res){
-        if(res.data.code === 200){       //code为0成功
+        if(res.data.code === 200 || moreCodeFn(res)){       //code为0成功
             return res
         }else {
             console.log(res.data.message)  //统一处理错误
-            return false
+            return res
         }
     }else {
         return false
     }
 }
 
+//过滤 接口函数（这些接口可以自定义 错误处理）
+const moreCodeFn = (res) =>{
+    let url = res.config.url;    //当前URL
+    let urlArray = ['/oauth/token'];
+    for(let i=0;i<urlArray.length;i++){
+        if(url.indexOf(urlArray[i])>=0){
+            return true
+        }
+    }
+    return false
+}
+
+
+const host = function(url){
+    const host = 'http://localhost:8088';
+    if(!url.startsWith("/"))
+        url = "/" + url;
+    return host + url;
+}
 
 const $axios = {
-    host(url){
-        const host = 'http://localhost:8088';
-        if(!url.startsWith("/"))
-            url = "/" + url;
-        return host + url;
-    },
     post(url, data, config){
-        return api.post($axios.host(url), qs.stringify(data), config);
+        return axios.post(host(url), qs.stringify(data), config);
     },
     get(url, data, config){
         if(data){
@@ -72,7 +88,7 @@ const $axios = {
                     params: data
                 }
         }
-        return api.get($axios.host(url), config)
+        return axios.get(host(url), config)
     },
     delete(url, data, config){
         if(data){
@@ -83,10 +99,10 @@ const $axios = {
                     params: data
                 }
         }
-        return api.delete($axios.host(url), config)
+        return axios.delete(host(url), config)
     },
     put(url, data, config){
-        return api.put($axios.host(url), qs.stringify(data), config);
+        return axios.put(host(url), qs.stringify(data), config);
     },
     refresh(){
         if(localStorage.refresh_token){
@@ -102,11 +118,13 @@ const $axios = {
                 localStorage.refresh_token = data.refresh_token;
 
                 localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
-                console.log(data.access_token);
-                this.token(data.access_token);
+                console.log("refresh token");
             }).catch(err=>{
-                console.log(err)
+                router.push('/login')
+                console.error(err)
             })
+        }else{
+            router.push('/login')
         }
     }
 };
