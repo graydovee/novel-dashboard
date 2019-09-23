@@ -46,7 +46,8 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$axios.basic().post("/oauth/token",this.param).then(res=>{
+					localStorage.access_token = 'Basic ZS1ib29rOjEyMzQ1Ng==';
+                    this.$axios.post("/oauth/token",this.param).then(res=>{
                         let data = res.data;
                         localStorage.access_token = data.access_token;
                         localStorage.refresh_token = data.refresh_token;

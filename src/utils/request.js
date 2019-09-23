@@ -1,30 +1,59 @@
 import axios from 'axios';
 import qs from 'qs'
 import jwt from 'jsonwebtoken'
-import Vue from 'vue'
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.timeout = 15000;
-// axios.defaults.withCredentials = true;   // axios 默认不发送cookie，需要全局设置true发送cookie
-
-axios.interceptors.response.use(response=>{
-    if (response.status === 200) {
-        return Promise.resolve(response);
-    } else {
-        return Promise.reject(response);
-    }
-},error => {
-    if(error.response.status === 401){
-        Vue.prototype.$router.push("/login");
-        console.log("login invalid");
-    }
-    return Promise.resolve(error);
+const api = axios.create({
+    timeout: 10000,
+    withCredentials:true    // axios 默认不发送cookie，需要全局设置true发送cookie
 })
+api.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+api.interceptors.request.use(conf => {
+        //请求带token
+        conf.headers['Authorization'] = 'Bearer ' + localStorage.access_token;
+        return conf
+    },
+    error => ({ status: 0, msg: error.message })
+)
+//请求返回拦截
+api.interceptors.response.use(response => {
+        return Promise.resolve(response).then(checkCode)
+    },
+    error => {
+        checkStatus(error.response)
+        return Promise.reject(error)
+    }
+)
+
+// http状态码错误处理
+const checkStatus = (res) => {
+    switch (res.status)
+    {
+        case 401 :{        //登录过期
+            console.log('登录过期')
+            break;
+        }
+        default:
+            console.error('服务器异常')
+            break;
+    }
+}
+// 后台自定义 code错误处理
+const checkCode = (res) => {
+    if(res){
+        if(res.data.code === 200){       //code为0成功
+            return res
+        }else {
+            console.log(res.data.message)  //统一处理错误
+            return false
+        }
+    }else {
+        return false
+    }
+}
+
 
 const $axios = {
-    get_axios(){
-        return axios;
-    },
     host(url){
         const host = 'http://localhost:8088';
         if(!url.startsWith("/"))
@@ -32,7 +61,7 @@ const $axios = {
         return host + url;
     },
     post(url, data, config){
-        return axios.post($axios.host(url), qs.stringify(data), config);
+        return api.post($axios.host(url), qs.stringify(data), config);
     },
     get(url, data, config){
         if(data){
@@ -43,7 +72,7 @@ const $axios = {
                     params: data
                 }
         }
-        return axios.get($axios.host(url), config)
+        return api.get($axios.host(url), config)
     },
     delete(url, data, config){
         if(data){
@@ -54,20 +83,10 @@ const $axios = {
                     params: data
                 }
         }
-        return axios.delete($axios.host(url), config)
+        return api.delete($axios.host(url), config)
     },
     put(url, data, config){
-        return axios.put($axios.host(url), qs.stringify(data), config);
-    },
-    basic(){
-        axios.defaults.headers.common['Authorization'] = 'Basic ZS1ib29rOjEyMzQ1Ng==';
-        return $axios;
-    },
-    token(token){
-        if(!token)
-            token = localStorage.access_token
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-        return $axios;
+        return api.put($axios.host(url), qs.stringify(data), config);
     },
     refresh(){
         if(localStorage.refresh_token){
@@ -76,7 +95,8 @@ const $axios = {
                 grant_type: 'refresh_token'
             }
 
-            this.basic().post("/oauth/token",param).then(res=>{
+            localStorage.access_token = 'Basic ZS1ib29rOjEyMzQ1Ng==';
+            this.post("/oauth/token",param).then(res=>{
                 let data = res.data;
                 localStorage.access_token = data.access_token;
                 localStorage.refresh_token = data.refresh_token;
