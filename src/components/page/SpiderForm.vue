@@ -19,12 +19,6 @@
                     <el-form-item label="首章地址">
                         <el-input v-model="form.url"></el-input>
                     </el-form-item>
-                    <el-form-item label="编码">
-                        <el-select v-model="form.encode" placeholder="请选择">
-                            <el-option key="utf-8" label="UTF-8" value="UTF-8"></el-option>
-                            <el-option key="gbk" label="GBK" value="GBK"></el-option>
-                        </el-select>
-                    </el-form-item>
                     <el-form-item label="规则">
                         <el-select v-model="form.matchRexId" placeholder="请选择">
                             <el-option v-for="item in rex" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -56,7 +50,6 @@ export default {
                 bookName: '牧神记',
                 authorName: '宅猪',
                 url:'http://www.biquge001.com/Book/16/16935/12799783.html',
-                encode:'',
                 matchRexId: '',
             },
             rex:[]
