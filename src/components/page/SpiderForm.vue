@@ -46,12 +46,7 @@ export default {
     name: 'baseform',
     data() {
         return {
-            form:{
-                bookName: '牧神记',
-                authorName: '宅猪',
-                url:'http://www.biquge001.com/Book/16/16935/12799783.html',
-                matchRexId: '',
-            },
+            form:{},
             rex:[]
         };
     },

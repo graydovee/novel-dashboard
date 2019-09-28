@@ -58,7 +58,10 @@ export default {
                         this.$router.push('/');
                     }).catch(err=>{
 						console.error(err);
-                        this.$message.error('登录失败');
+						if(err.response.status===400)
+                            this.$message.error('登录失败');
+						else
+						    this.$message.error('登录失败');
                     })
                 } else {
                     this.$message.error('请输入账号和密码');

@@ -61,6 +61,11 @@ export default {
 					index: 'dashboard',
 					title: '系统首页'
 				},
+				{
+					icon: 'el-icon-lx-peoplefill',
+					index: 'userList',
+					title: '用户列表'
+				},
                 {
                     icon: 'el-icon-lx-cascades',
                     index: 'novelList',

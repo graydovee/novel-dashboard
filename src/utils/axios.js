@@ -3,6 +3,19 @@ import qs from 'qs'
 import jwt from 'jsonwebtoken'
 import router from '../router/index'
 
+
+const host = function(url){
+    let host;
+    if(process.env.NODE_ENV === 'development'){
+        host = 'http://localhost:8088';
+    }else{
+        host = 'http://admin.ndovel.com';
+    }
+    if(!url.startsWith("/"))
+        url = "/" + url;
+    return host + url;
+}
+
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.timeout = 15000;
 // axios.defaults.withCredentials = true;   // axios 默认不发送cookie，需要全局设置true发送cookie
@@ -32,7 +45,6 @@ const checkStatus = (res) => {
     switch (res.status)
     {
         case 401 :{        //登录过期
-            console.log('登录过期，刷新令牌');
             $axios.refresh();
             break;
         }
@@ -65,14 +77,6 @@ const moreCodeFn = (res) =>{
         }
     }
     return false
-}
-
-
-const host = function(url){
-    const host = 'http://localhost:8088';
-    if(!url.startsWith("/"))
-        url = "/" + url;
-    return host + url;
 }
 
 const $axios = {
@@ -118,7 +122,6 @@ const $axios = {
                 localStorage.refresh_token = data.refresh_token;
 
                 localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
-                console.log("refresh token");
             }).catch(err=>{
                 router.push('/login')
                 console.error(err)

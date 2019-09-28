@@ -8,7 +8,8 @@
 export default {
     name: 'App',
     created(){
-    	this.$axios.refresh();
+		if(this.$route.path!=='/')
+    	    this.$axios.refresh();
     }
 }
 </script>

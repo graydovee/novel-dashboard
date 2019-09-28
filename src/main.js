@@ -25,14 +25,17 @@ router.beforeEach((to, from, next) => {
         next('/login');
     } else if (to.meta.permission) {
         const roles = JSON.parse(user_info).authorities;
-        let flag = false;
+        let role = {}
+        let need = '';
         for (let i in roles) {
-            if (roles[i] === 'ROLE_USER'){
-                flag = true;
-                break;
-            }
+            role[roles[i]] = true;
         }
-        flag ? next() : next('/403');
+        if(to.path==='/userList'){
+            need =  'ROLE_ROOT'
+        }else{
+            need = 'ROLE_USER'
+        }
+        role[need] ? next() : next('/403');
     } else {
         // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
