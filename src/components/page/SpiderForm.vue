@@ -69,7 +69,8 @@ export default {
 		},
         onSubmit() {
 			this.$axios.post('/admin/book',this.form).then(res=>{
-				this.$message.success("正在爬取！")
+				this.$message.success("正在爬取！");
+                this.reset();
 			})
         },
 		getRex() {
