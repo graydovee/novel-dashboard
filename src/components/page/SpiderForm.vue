@@ -52,7 +52,7 @@ export default {
     },
     created(){
     	this.getRex();
-		if(process.env.NODE_ENV)
+		if(process.env.NODE_ENV === 'development')
 			this.form = {
 				bookName: '牧神记',
 				authorName: '宅猪',

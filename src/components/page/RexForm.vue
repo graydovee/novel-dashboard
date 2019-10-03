@@ -45,7 +45,7 @@ export default {
         };
     },
     created(){
-    	if(process.env.NODE_ENV)
+    	if(process.env.NODE_ENV === 'development')
     		this.form = {
 				contentRex:'<div[^<]*id="content"[^<]*>([\\s\\S]*?)</div>',
 				titleRex:'<h1>([^<]*)</h1>',
