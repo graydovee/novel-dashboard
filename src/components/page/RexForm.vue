@@ -38,13 +38,21 @@
 
 <script>
 export default {
-    name: 'baseform',
+    name: 'RexForm',
     data() {
         return {
             form:{}
         };
     },
     created(){
+    	if(process.env.NODE_ENV)
+    		this.form = {
+				contentRex:'<div[^<]*id="content"[^<]*>([\\s\\S]*?)</div>',
+				titleRex:'<h1>([^<]*)</h1>',
+				nextPageRex:'<a[^<]*href="([^<]*.html)"[^<]*>下一章</a>',
+				name:'笔趣阁爬虫方案',
+				info:'无'
+			};
     },
     methods: {
         postRex() {

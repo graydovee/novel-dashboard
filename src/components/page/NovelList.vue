@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
+                    <i class="el-icon-lx-cascades"></i> 小说列表
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -28,9 +28,16 @@
                 <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="书名"></el-table-column>
                 <el-table-column prop="author.name" label="作者"></el-table-column>
+                <el-table-column prop="createTime" label="爬取时间"></el-table-column>
 
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
+                        <el-button
+                                type="text"
+                                icon="el-icon-lx-sort"
+                                class="green"
+                                @click="handleEdit(scope.$index, scope.row)"
+                        >章节</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -42,14 +49,49 @@
             </el-table>
         </div>
 
+        <!-- 章节出框 -->
+        <el-dialog title="章节列表" :visible.sync="editVisible" width="50%">
+            <el-table
+                    :data="chapter.content"
+                    border
+                    class="table"
+                    ref="multipleTable"
+                    header-cell-class-name="table-header"
+            >
+                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="title" label="标题"></el-table-column>
+                <el-table-column prop="createTime" label="爬取时间"></el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="query.pageIndex"
+                        :page-size="query.pageSize"
+                        :total="chapter.totalElements"
+                        @current-change="handlePageChange"
+                ></el-pagination>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
 export default {
-    name: 'basetable',
+    name: 'novelList',
     data() {
         return {
+			query: {
+				bookId: 0,
+				pageIndex: 1,
+				pageSize: 5
+			},
+            chapter:{
+				content:{},
+				totalElements: 0,
+				totalPages:0
+            },
             book:[],
             editVisible: false,
             findStr:'',
@@ -92,7 +134,32 @@ export default {
                 })
             })
             .catch(() => {});
-        }
+        },
+		// 打开章节列表操作
+		handleEdit(index, row) {
+			this.form = row;
+			this.editVisible = true;
+			this.getChapter(row.id);
+		},
+        getChapter(id){
+        	if(id)
+        	    this.query.bookId = id;
+
+        	let data = {
+        		bookId: this.query.bookId,
+				pageIndex: this.query.pageIndex - 1,
+                pageSize: this.query.pageSize
+            }
+        	this.$axios.get('/chapter',data).then(res=>{
+        		console.log(res.data);
+        		this.chapter = res.data.data;
+            })
+        },
+		// 分页导航
+		handlePageChange(val) {
+			this.$set(this.query, 'pageIndex', val);
+			this.getChapter();
+		}
     }
 };
 </script>
@@ -125,5 +192,9 @@ export default {
     margin: auto;
     width: 40px;
     height: 40px;
+}
+
+.green{
+    color: rgb(103,194,58);
 }
 </style>

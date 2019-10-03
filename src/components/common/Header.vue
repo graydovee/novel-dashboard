@@ -93,10 +93,12 @@ export default {
         }
     },
     created() {
-        if (document.body.clientWidth < 1500) {
-            this.collapseChage();
-        }
 		this.user = JSON.parse(localStorage.user_info);
+    },
+	mounted(){
+		if (document.body.clientWidth < 1500) {
+			this.collapseChage();
+		}
     }
 };
 </script>

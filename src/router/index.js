@@ -35,6 +35,11 @@ export default new Router({
                     meta: { title: '爬虫规则列表', permission: true }
                 },
                 {
+                    path: '/spiderList',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/SpiderList.vue'),
+                    meta: { title: '自动更新管理', permission: true }
+                },
+                {
                     path: '/spiderForm',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/SpiderForm.vue'),
                     meta: { title: '爬取小说', permission: true }

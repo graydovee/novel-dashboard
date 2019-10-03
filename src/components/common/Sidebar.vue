@@ -73,6 +73,11 @@ export default {
                 },
 				{
 					icon: 'el-icon-lx-cascades',
+					index: 'spiderList',
+					title: '自动更新'
+				},
+				{
+					icon: 'el-icon-lx-cascades',
 					index: 'rexList',
 					title: '爬虫规则列表'
 				},

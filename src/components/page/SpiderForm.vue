@@ -43,7 +43,7 @@
 
 <script>
 export default {
-    name: 'baseform',
+    name: 'SpiderForm',
     data() {
         return {
             form:{},
@@ -52,6 +52,13 @@ export default {
     },
     created(){
     	this.getRex();
+		if(process.env.NODE_ENV)
+			this.form = {
+				bookName: '牧神记',
+				authorName: '宅猪',
+				url:'http://www.biquge001.com/Book/16/16935/12799783.html',
+				matchRexId: '',
+			};
     },
     methods: {
 		refresh(){
