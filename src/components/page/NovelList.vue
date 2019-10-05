@@ -62,6 +62,7 @@
                 <el-table-column prop="title" label="标题"></el-table-column>
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
+            <p class="visit">访问量：{{visit}}</p>
             <div class="pagination">
                 <el-pagination
                         background
@@ -95,7 +96,8 @@ export default {
             book:[],
             editVisible: false,
             findStr:'',
-            form:{}
+            form:{},
+            visit:0,
         };
     },
     created() {
@@ -140,7 +142,13 @@ export default {
 			this.form = row;
 			this.editVisible = true;
 			this.getChapter(row.id);
+			this.getVisit(row.id);
 		},
+        getVisit(book_id){
+			this.$axios.get('/visit?bookId='+book_id).then(res=>{
+				this.visit = res.data.data;
+            });
+        },
         getChapter(id){
         	if(id)
         	    this.query.bookId = id;
@@ -169,10 +177,6 @@ export default {
     margin-bottom: 20px;
 }
 
-.handle-select {
-    width: 120px;
-}
-
 .handle-input {
     width: 300px;
     display: inline-block;
@@ -187,14 +191,11 @@ export default {
 .mr10 {
     margin-right: 10px;
 }
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
-}
 
 .green{
     color: rgb(103,194,58);
+}
+.visit{
+    padding: 20px 20px 0 20px;
 }
 </style>
