@@ -51,6 +51,7 @@
 
         <!-- 章节出框 -->
         <el-dialog title="章节列表" :visible.sync="editVisible" width="50%">
+
             <el-table
                     :data="chapter.content"
                     border
@@ -62,7 +63,16 @@
                 <el-table-column prop="title" label="标题"></el-table-column>
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
-            <p class="visit">访问量：{{visit}}</p>
+            <p class="visit">
+                <el-button
+                        type="primary"
+                        icon="el-icon-refresh"
+                        class="mr10 mrb10"
+                        @click="delCache(form.id)"
+                >刷新缓存</el-button>
+                访问量：{{visit}}
+            </p>
+
             <div class="pagination">
                 <el-pagination
                         background
@@ -159,7 +169,6 @@ export default {
                 pageSize: this.query.pageSize
             }
         	this.$axios.get('/chapter',data).then(res=>{
-        		console.log(res.data);
         		this.chapter = res.data.data;
             })
         },
@@ -167,7 +176,18 @@ export default {
 		handlePageChange(val) {
 			this.$set(this.query, 'pageIndex', val);
 			this.getChapter();
-		}
+		},
+		delCache(key){
+        	let param = {
+        		name: 'chapter',
+                key: key
+            }
+        	this.$axios.delete('/admin/cache', param).then(res => {
+        		this.$message.success("刷新成功");
+            }).catch(err =>{
+				this.$message.error("刷新失败");
+            })
+        }
     }
 };
 </script>
@@ -190,6 +210,10 @@ export default {
 }
 .mr10 {
     margin-right: 10px;
+}
+
+.mrb10{
+    margin-bottom: 10px;
 }
 
 .green{
