@@ -29,8 +29,8 @@
                 <el-table-column label="状态" align="center" width="70">
                     <template slot-scope="scope">
                         <el-tag
-                                :type="scope.row.deleted===false?'success':'danger'"
-                        >{{scope.row.deleted===false?'连载':'完结'}}</el-tag>
+                                :type="scope.row.finished===false?'success':'danger'"
+                        >{{scope.row.finished===false?'连载':'完结'}}</el-tag>
                     </template>
                 </el-table-column>
 
@@ -47,14 +47,14 @@
                             icon="el-icon-delete"
                             class="red"
                             @click="handleDelete(scope.$index, scope.row)"
-                            v-if="!scope.row.deleted"
+                            v-if="!scope.row.finished"
                         >停更</el-button>
                         <el-button
                                 type="text"
                                 icon="el-icon-lx-global"
                                 class="green"
                                 @click="handleRefresh(scope.$index, scope.row)"
-                                v-if="scope.row.deleted"
+                                v-if="scope.row.finished"
                         >追更</el-button>
                     </template>
                 </el-table-column>

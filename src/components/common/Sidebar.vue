@@ -74,7 +74,7 @@ export default {
 				{
 					icon: 'el-icon-lx-cascades',
 					index: 'spiderList',
-					title: '自动更新'
+					title: '自动更新管理'
 				},
 				{
 					icon: 'el-icon-lx-cascades',
@@ -83,14 +83,14 @@ export default {
 				},
 				{
 					icon: 'el-icon-lx-calendar',
+					index: 'spiderForm',
+					title: '爬取小说'
+				},
+				{
+					icon: 'el-icon-lx-calendar',
 					index: 'RexForm',
 					title: '新增规则'
-				},
-                {
-                    icon: 'el-icon-lx-calendar',
-                    index: 'spiderForm',
-                    title: '爬取小说'
-                }
+				}
             ]
         };
     },
