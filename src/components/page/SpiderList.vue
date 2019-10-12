@@ -66,6 +66,7 @@
             <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="id">
                     <el-input v-model="form.id" disabled="false" style="width: 30%"></el-input>
+                    <el-button type="success" style="margin-left: 10%" @click="update">更新</el-button>
                 </el-form-item>
                 <el-form-item label="爬虫位置">
                     <el-input v-model="form.url"></el-input>
@@ -123,6 +124,24 @@ export default {
 				this.tableData = res.data.data;
 				this.$message.success("刷新成功")
 			})
+        },
+		update(){
+			this.$confirm('确定要立刻更新吗？', '提示', {
+				type: 'warning'
+			})
+			.then(() => {
+				this.$axios.post('/admin/update?id='+this.form.id).then(res=>{
+					if(res.data.code===200){
+						this.$message.success('操作成功');
+						this.getData();
+					}else{
+						this.$message.error('服务器繁忙');
+					}
+				}).catch(res=>{
+					this.$message.error('服务器繁忙');
+				})
+			})
+			.catch(() => {});
         },
         // 删除操作
         handleDelete(index, row) {
