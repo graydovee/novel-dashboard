@@ -7,7 +7,7 @@ import router from '../router/index'
 const host = function(url){
     let host = '';
     if(process.env.NODE_ENV === 'development'){
-        host = 'https://admin.ndovel.com';
+        host = 'http://localhost:8090';
     }
 
     if(!url.startsWith("/"))
