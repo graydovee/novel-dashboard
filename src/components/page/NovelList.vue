@@ -47,6 +47,17 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <div class="pagination">
+                <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="query_book.index"
+                        :page-size="query_book.size"
+                        :total="totalElements"
+                        @current-change="handlePageChange"
+                ></el-pagination>
+            </div>
         </div>
 
         <!-- 章节出框 -->
@@ -64,12 +75,6 @@
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
             <p class="visit">
-                <el-button
-                        type="primary"
-                        icon="el-icon-refresh"
-                        class="mr10 mrb10"
-                        @click="delCache(form.id)"
-                >刷新缓存</el-button>
                 访问量：{{visit}}
             </p>
 
@@ -77,10 +82,10 @@
                 <el-pagination
                         background
                         layout="total, prev, pager, next"
-                        :current-page="query.pageIndex"
-                        :page-size="query.pageSize"
+                        :current-page="query.index"
+                        :page-size="query.size"
                         :total="chapter.totalElements"
-                        @current-change="handlePageChange"
+                        @current-change="getData"
                 ></el-pagination>
             </div>
         </el-dialog>
@@ -108,6 +113,12 @@ export default {
             findStr:'',
             form:{},
             visit:0,
+            query_book: {
+			    index: 0,
+                size: 10
+            },
+            totalPages: 0,
+            totalElements:0
         };
     },
     created() {
@@ -116,15 +127,27 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            this.$axios.get("/book").then(res => {
-                this.book = res.data.data;
+            let data = {
+                index: this.query_book.index,
+                size: this.query_book.size
+            }
+            this.$axios.get("/book", data).then(res => {
+                let page = res.data.data;
+                this.book = page.content;
+                this.totalElements = page.totalElements;
             });
         },
         refresh(){
-			this.$axios.get("/book").then(res => {
-				this.book = res.data.data;
-				this.$message.success("刷新成功！")
-			});
+            let data = {
+                index: this.query_book.index,
+                size: this.query_book.size
+            }
+            this.$axios.get("/book", data).then(res => {
+                let page = res.data.data;
+                this.book = page.content;
+                this.totalElements = page.totalElements;
+                this.$message.success("刷新成功！")
+            });
         },
         // 触发搜索按钮
         handleSearch() {
@@ -165,8 +188,8 @@ export default {
 
         	let data = {
         		bookId: this.query.bookId,
-				pageIndex: this.query.pageIndex - 1,
-                pageSize: this.query.pageSize
+				index: this.query.pageIndex - 1,
+                size: this.query.pageSize
             }
         	this.$axios.get('/chapter',data).then(res=>{
         		this.chapter = res.data.data;
@@ -176,18 +199,7 @@ export default {
 		handlePageChange(val) {
 			this.$set(this.query, 'pageIndex', val);
 			this.getChapter();
-		},
-		delCache(key){
-        	let param = {
-        		name: 'chapter',
-                key: key
-            }
-        	this.$axios.delete('/admin/cache', param).then(res => {
-        		this.$message.success("刷新成功");
-            }).catch(err =>{
-				this.$message.error("刷新失败");
-            })
-        }
+		}
     }
 };
 </script>

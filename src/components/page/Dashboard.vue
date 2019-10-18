@@ -18,10 +18,10 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
+                                <i class="el-icon-notebook-2 grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">{{visit}}</div>
-                                    <div>用户访问量</div>
+                                    <div>阅读量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -61,13 +61,11 @@
 				return this.user.user_name ? this.user.user_name : "---";
 			}
         },
-        created(){
+        mounted(){
 			this.user = JSON.parse(localStorage.user_info);
 			this.$axios.get('visit').then(res=>{
 				this.visit = res.data.data;
             })
-        },
-        methods: {
         }
     }
 

@@ -44,6 +44,16 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="pagination">
+                <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="query.index"
+                        :page-size="query.size"
+                        :total="totalElements"
+                        @current-change="getRex"
+                ></el-pagination>
+            </div>
         </div>
 
         <!-- 编辑弹出框 -->
@@ -84,7 +94,12 @@
 				pageTotal: 0,
 				form: {},
 				idx: -1,
-				id: -1
+				id: -1,
+                query:{
+				    index: 0,
+                    size: 10,
+                },
+                totalElements: 0
 			};
 		},
 		created() {
@@ -93,13 +108,25 @@
 		methods: {
 			// 获取数据
 			getRex() {
-				this.$axios.get("/admin/rex").then(res => {
-					this.rex = res.data.data;
+			    let data = {
+			        index: this.query.index,
+                    size: this.query.size
+                }
+				this.$axios.get("/admin/rex", data).then(res => {
+                    let page = res.data.data;
+                    this.rex = page.content;
+                    this.totalElements = page.totalElements;
 				});
 			},
             refresh(){
-				this.$axios.get("/admin/rex").then(res => {
-					this.rex = res.data.data;
+                let data = {
+                    index: this.query.index,
+                    size: this.query.size
+                }
+				this.$axios.get("/admin/rex", data).then(res => {
+                    let page = res.data.data;
+                    this.rex = page.content;
+                    this.totalElements = page.totalElements;
 					this.$message.success("刷新成功！")
 				});
             },

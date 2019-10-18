@@ -59,6 +59,17 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <div class="pagination">
+                <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="query.index"
+                        :page-size="query.size"
+                        :total="totalElements"
+                        @current-change="getData"
+                ></el-pagination>
+            </div>
         </div>
 
         <!-- 编辑弹出框 -->
@@ -99,6 +110,11 @@ export default {
     data() {
         return {
             tableData: [],
+            query: {
+                index: 0,
+                size: 10
+            },
+            totalElements: 0,
             editVisible: false,
             form: {
             	id: 0,
@@ -106,7 +122,6 @@ export default {
                 matchRexId: '',
             },
             rex:{},
-            id: -1
         };
     },
     created() {
@@ -115,15 +130,27 @@ export default {
     methods: {
         // 获取数据
         getData() {
-        	this.$axios.get('/admin/spider_info').then(res=>{
-        		this.tableData = res.data.data;
+            let data = {
+                index: this.query.index,
+                size: this.query.size
+            }
+        	this.$axios.get('/admin/spider_info', data).then(res=>{
+                let page = res.data.data;
+                this.tableData = page.content;
+                this.totalElements = page.totalElements;
             })
         },
 		refresh(){
-			this.$axios.get('/admin/spider_info').then(res=>{
-				this.tableData = res.data.data;
-				this.$message.success("刷新成功")
-			})
+            let data = {
+                index: this.query.index,
+                size: this.query.size
+            }
+            this.$axios.get('/admin/spider_info', data).then(res=>{
+                let page = res.data.data;
+                this.tableData = page.content;
+                this.totalElements = page.totalElements;
+                this.$message.success("刷新成功！")
+            })
         },
 		update(){
 			this.$confirm('确定要立刻更新吗？', '提示', {
