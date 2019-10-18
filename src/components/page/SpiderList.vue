@@ -64,7 +64,7 @@
                 <el-pagination
                         background
                         layout="total, prev, pager, next"
-                        :current-page="query.index"
+                        :current-page.sync="query.index"
                         :page-size="query.size"
                         :total="totalElements"
                         @current-change="getData"
@@ -111,7 +111,7 @@ export default {
         return {
             tableData: [],
             query: {
-                index: 0,
+                index: 1,
                 size: 10
             },
             totalElements: 0,
@@ -131,7 +131,7 @@ export default {
         // 获取数据
         getData() {
             let data = {
-                index: this.query.index,
+                index: this.query.index - 1,
                 size: this.query.size
             }
         	this.$axios.get('/admin/spider_info', data).then(res=>{
@@ -142,7 +142,7 @@ export default {
         },
 		refresh(){
             let data = {
-                index: this.query.index,
+                index: this.query.index - 1,
                 size: this.query.size
             }
             this.$axios.get('/admin/spider_info', data).then(res=>{

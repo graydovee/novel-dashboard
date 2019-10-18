@@ -52,10 +52,10 @@
                 <el-pagination
                         background
                         layout="total, prev, pager, next"
-                        :current-page="query_book.index"
+                        :current-page.sync="query_book.index"
                         :page-size="query_book.size"
                         :total="totalElements"
-                        @current-change="handlePageChange"
+                        @current-change="getData"
                 ></el-pagination>
             </div>
         </div>
@@ -82,10 +82,10 @@
                 <el-pagination
                         background
                         layout="total, prev, pager, next"
-                        :current-page="query.index"
+                        :current-page.sync="query.index"
                         :page-size="query.size"
                         :total="chapter.totalElements"
-                        @current-change="getData"
+                        @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </el-dialog>
@@ -100,8 +100,8 @@ export default {
         return {
 			query: {
 				bookId: 0,
-				pageIndex: 1,
-				pageSize: 5
+				index: 1,
+				size: 5
 			},
             chapter:{
 				content:{},
@@ -114,7 +114,7 @@ export default {
             form:{},
             visit:0,
             query_book: {
-			    index: 0,
+			    index: 1,
                 size: 10
             },
             totalPages: 0,
@@ -128,7 +128,7 @@ export default {
         // 获取 easy-mock 的模拟数据
         getData() {
             let data = {
-                index: this.query_book.index,
+                index: this.query_book.index - 1,
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
@@ -139,7 +139,7 @@ export default {
         },
         refresh(){
             let data = {
-                index: this.query_book.index,
+                index: this.query_book.index - 1,
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
@@ -188,16 +188,15 @@ export default {
 
         	let data = {
         		bookId: this.query.bookId,
-				index: this.query.pageIndex - 1,
-                size: this.query.pageSize
+				index: this.query.index - 1,
+                size: this.query.size
             }
         	this.$axios.get('/chapter',data).then(res=>{
         		this.chapter = res.data.data;
             })
         },
 		// 分页导航
-		handlePageChange(val) {
-			this.$set(this.query, 'pageIndex', val);
+		handlePageChange() {
 			this.getChapter();
 		}
     }
