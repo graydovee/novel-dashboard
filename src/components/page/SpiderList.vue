@@ -14,6 +14,11 @@
                         icon="el-icon-refresh"
                         @click="refresh"
                 >刷新</el-button>
+                <el-button
+                        type="primary"
+                        icon="el-icon-s-data"
+                        @click="changeMod"
+                >{{query.mod===0?'全部':(query.mod===1?'连载中':'已完结')}}</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -112,7 +117,8 @@ export default {
             tableData: [],
             query: {
                 index: 1,
-                size: 10
+                size: 10,
+                mod: 0
             },
             totalElements: 0,
             editVisible: false,
@@ -122,6 +128,7 @@ export default {
                 matchRexId: '',
             },
             rex:{},
+
         };
     },
     created() {
@@ -132,13 +139,18 @@ export default {
         getData() {
             let data = {
                 index: this.query.index - 1,
-                size: this.query.size
+                size: this.query.size,
+                mod: this.query.mod
             }
         	this.$axios.get('/admin/spider_info', data).then(res=>{
                 let page = res.data.data;
                 this.tableData = page.content;
                 this.totalElements = page.totalElements;
             })
+        },
+        changeMod(){
+            this.query.mod = (this.query.mod + 1) % 3;
+            this.getData();
         },
 		refresh(){
             let data = {

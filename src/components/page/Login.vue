@@ -47,7 +47,7 @@ export default {
             this.$refs.login.validate(valid => {
                 if (valid) {
 					localStorage.access_token = 'Basic ZS1ib29rOjEyMzQ1Ng==';
-                    this.$axios.post("/oauth/token",this.param).then(res=>{
+                    this.$axios.post("/login",this.param).then(res=>{
                         let data = res.data;
                         localStorage.access_token = data.access_token;
                         localStorage.refresh_token = data.refresh_token;
@@ -57,9 +57,9 @@ export default {
                         this.$message.success('登录成功');
                         this.$router.push('/');
                     }).catch(err=>{
-						console.error(err);
-						if(err.response.status===400)
-                            this.$message.error('登录失败');
+						let data = err.response.data;
+						if (data)
+                            this.$message.error(data.data);
 						else
 						    this.$message.error('登录失败');
                     })
