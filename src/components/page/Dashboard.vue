@@ -10,7 +10,8 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">欢迎{{username}}回来！</div>
+                    <div class="user-info-list">创建时间：<span>{{user.create_time}}</span></div>
+                    <div class="user-info-list">欢迎回来！</div>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -144,6 +145,8 @@
         font-size: 14px;
         color: #999;
         line-height: 25px;
+    }
+    .user-info-list span {
         margin-left: 70px;
     }
 
