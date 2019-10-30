@@ -70,7 +70,7 @@
                     ref="multipleTable"
                     header-cell-class-name="table-header"
             >
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="title" label="标题"></el-table-column>
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
