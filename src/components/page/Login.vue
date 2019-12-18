@@ -46,14 +46,14 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-					localStorage.access_token = 'Basic ZS1ib29rOjEyMzQ1Ng==';
+					localStorage.setItem("access_token", 'Basic ZS1ib29rOjEyMzQ1Ng==');
                     this.$axios.post("/login",this.param).then(res=>{
                         let data = res.data;
-                        localStorage.access_token = data.access_token;
-                        localStorage.refresh_token = data.refresh_token;
+                        localStorage.setItem("access_token", data.access_token);
+                        localStorage.setItem("refresh_token", data.refresh_token);
 
 
-                        localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
+                        localStorage.setItem("user_info", JSON.stringify(jwt.decode(data.access_token)));
                         this.$message.success('登录成功');
                         this.$router.push('/');
                     }).catch(err=>{

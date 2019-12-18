@@ -114,6 +114,7 @@ export default {
             form:{},
             visit:0,
             query_book: {
+			    name: '',
 			    index: 1,
                 size: 10
             },
@@ -125,9 +126,9 @@ export default {
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData() {
             let data = {
+                name: this.query_book.name,
                 index: this.query_book.index - 1,
                 size: this.query_book.size
             }
@@ -139,6 +140,7 @@ export default {
         },
         refresh(){
             let data = {
+                name: this.query_book.name,
                 index: this.query_book.index - 1,
                 size: this.query_book.size
             }
@@ -151,7 +153,8 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            this.query_book.index = 1
+            this.query_book.name = this.findStr;
             this.getData();
         },
         // 删除操作

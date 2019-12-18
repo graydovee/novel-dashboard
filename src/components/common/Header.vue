@@ -93,7 +93,7 @@ export default {
         }
     },
     created() {
-		this.user = JSON.parse(localStorage.user_info);
+		this.user = JSON.parse(localStorage.getItem("user_info"));
     },
 	mounted(){
 		if (document.body.clientWidth < 1500) {

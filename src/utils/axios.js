@@ -21,10 +21,10 @@ axios.defaults.timeout = 15000;
 
 axios.interceptors.request.use(conf => {
         //请求带token
-        if(!localStorage.access_token.startsWith('Basic'))
-            conf.headers['Authorization'] = 'Bearer ' + localStorage.access_token;
+        if(!localStorage.getItem("access_token").startsWith('Basic'))
+            conf.headers['Authorization'] = 'Bearer ' + localStorage.getItem("access_token");
         else
-            conf.headers['Authorization'] = localStorage.access_token;
+            conf.headers['Authorization'] = localStorage.getItem("access_token");
         return conf
     },
     error => ({ status: 0, msg: error.message })
@@ -108,20 +108,21 @@ const $axios = {
         return axios.put(host(url), qs.stringify(data), config);
     },
     refresh(){
-        if(localStorage.refresh_token){
+        if(localStorage.getItem("refresh_token")){
             let param = {
-                refresh_token: localStorage.refresh_token,
+                refresh_token: localStorage.getItem("refresh_token"),
                 grant_type: 'refresh_token'
             }
 
             localStorage.access_token = 'Basic ZS1ib29rOjEyMzQ1Ng==';
             this.post("/oauth/token",param).then(res=>{
                 let data = res.data;
-                localStorage.access_token = data.access_token;
-                localStorage.refresh_token = data.refresh_token;
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("refresh_token", data.refresh_token);
 
-                localStorage.user_info = JSON.stringify(jwt.decode(data.access_token));
+                localStorage.setItem("user_info", JSON.stringify(jwt.decode(data.access_token)));
             }).catch(err=>{
+                localStorage.removeItem("refresh_token")
                 router.push('/login')
                 console.error(err)
             })

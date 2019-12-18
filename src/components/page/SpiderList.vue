@@ -12,8 +12,11 @@
                 <el-button
                         type="primary"
                         icon="el-icon-refresh"
+                        class="mr10"
                         @click="refresh"
                 >刷新</el-button>
+                <el-input v-model="findStr" placeholder="书名或作者名" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button
                         type="primary"
                         icon="el-icon-s-data"
@@ -116,6 +119,7 @@ export default {
         return {
             tableData: [],
             query: {
+                name: '',
                 index: 1,
                 size: 10,
                 mod: 0
@@ -128,6 +132,7 @@ export default {
                 matchRexId: '',
             },
             rex:{},
+            findStr: ''
 
         };
     },
@@ -138,6 +143,7 @@ export default {
         // 获取数据
         getData() {
             let data = {
+                name: this.query.name,
                 index: this.query.index - 1,
                 size: this.query.size,
                 mod: this.query.mod
@@ -154,8 +160,10 @@ export default {
         },
 		refresh(){
             let data = {
+                name: this.query.name,
                 index: this.query.index - 1,
-                size: this.query.size
+                size: this.query.size,
+                mod: this.query.mod
             }
             this.$axios.get('/admin/spider_info', data).then(res=>{
                 let page = res.data.data;
@@ -181,6 +189,10 @@ export default {
 				})
 			})
 			.catch(() => {});
+        },
+        handleSearch() {
+          this.query.name = this.findStr;
+          this.getData();
         },
         // 删除操作
         handleDelete(index, row) {
@@ -263,10 +275,6 @@ export default {
     margin-bottom: 20px;
 }
 
-.handle-select {
-    width: 120px;
-}
-
 .handle-input {
     width: 300px;
     display: inline-block;
@@ -280,12 +288,6 @@ export default {
 }
 .mr10 {
     margin-right: 10px;
-}
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
 }
 .green{
     color: rgb(103,194,58);

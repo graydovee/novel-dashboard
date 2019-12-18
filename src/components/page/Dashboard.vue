@@ -63,7 +63,7 @@
 			}
         },
         mounted(){
-			this.user = JSON.parse(localStorage.user_info);
+			this.user = JSON.parse(localStorage.getItem("user_info"));
 			this.$axios.get('visit').then(res=>{
 				this.visit = res.data.data;
             })
