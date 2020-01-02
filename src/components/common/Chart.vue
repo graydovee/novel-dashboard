@@ -105,7 +105,6 @@
                             name: tag.replace(/-/g, '/')
                         })
                     }
-                    console.log(ret)
                     this.visit = ret
                 })
             }
