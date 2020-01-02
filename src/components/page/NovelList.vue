@@ -37,7 +37,7 @@
                                 icon="el-icon-lx-sort"
                                 class="green"
                                 @click="handleEdit(scope.$index, scope.row)"
-                        >章节</el-button>
+                        >详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -75,7 +75,8 @@
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
             <p class="visit">
-                访问量：{{visit}}
+                阅读量：{{visit}}
+                <el-button type="primary" style="margin-left: 10px" @click="handleVisit">详情</el-button>
             </p>
 
             <div class="pagination">
@@ -90,12 +91,18 @@
             </div>
         </el-dialog>
 
+        <el-dialog title="阅读量统计" :visible.sync="visitVisible" width="50%" @close="handleVisitClose">
+            <chart :id="now_id"></chart>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
+import Chart from '@/components/common/Chart'
 export default {
     name: 'novelList',
+    components: {Chart},
     data() {
         return {
 			query: {
@@ -110,6 +117,8 @@ export default {
             },
             book:[],
             editVisible: false,
+            visitVisible: false,
+            now_id: null,
             findStr:'',
             form:{},
             visit:0,
@@ -179,7 +188,15 @@ export default {
 			this.editVisible = true;
 			this.getChapter(row.id);
 			this.getVisit(row.id);
+			this.now_id = row.id
 		},
+        handleVisit() {
+            this.editVisible = false
+            this.visitVisible = true
+        },
+        handleVisitClose() {
+            this.editVisible = true
+        },
         getVisit(book_id){
 			this.$axios.get('/visit?bookId='+book_id).then(res=>{
 				this.visit = res.data.data;

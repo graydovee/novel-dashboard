@@ -29,17 +29,27 @@
                     </el-col>
                 </el-row>
             </el-col>
+
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card shadow="hover">
+                    <chart></chart>
+                </el-card>
+            </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
+    import Chart from '@/components/common/Chart'
     export default {
         name: 'dashboard',
         data() {
             return {
 				user: {},
-				visit:0
+				visit:0,
+                data: {}
             }
         },
         computed: {
@@ -67,6 +77,9 @@
 			this.$axios.get('visit').then(res=>{
 				this.visit = res.data.data;
             })
+        },
+        components: {
+            Chart
         }
     }
 
@@ -154,6 +167,5 @@
     .mgb20 {
         margin-bottom: 20px;
     }
-
 
 </style>
