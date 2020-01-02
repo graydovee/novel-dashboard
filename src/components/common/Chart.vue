@@ -15,7 +15,7 @@
         </div>
         <schart ref="bar" class="schart" canvasId="bar" :data="visit" type="bar"
                 :options="{
-                        title: '最近七天每天的用户访问量',
+                        title: this.title,
                         showValue: true,
                         fillColor: 'rgb(45, 140, 240)',
                         bottomPadding: 30,
@@ -34,6 +34,7 @@
                 visit:[],
                 timeValue: [],
                 bookId: null,
+                title: ''
             }
         },
         methods:{
@@ -78,6 +79,11 @@
                     this.timeValue[1] = new Date()
                 }
 
+
+                if (this.title !== '') {
+                    this.title = this.dateFormat(fmt, this.timeValue[0]) + '至' + this.dateFormat(fmt, this.timeValue[1]) + '的访问量'
+                }
+
                 let param = {
                     begin: this.dateFormat(fmt, this.timeValue[0]),
                     end: this.dateFormat(fmt, this.timeValue[1]),
@@ -111,6 +117,7 @@
         mounted () {
             this.bookId = this.id
             this.getVisit()
+            this.title = '最近七天每天的用户访问量'
         }
     }
 </script>
