@@ -92,7 +92,7 @@
         </el-dialog>
 
         <el-dialog title="阅读量统计" :visible.sync="visitVisible" width="50%" @close="handleVisitClose">
-            <chart :id="now_id"></chart>
+            <chart :id="now_id" v-if="visitVisible"></chart>
         </el-dialog>
 
     </div>
@@ -102,7 +102,9 @@
 import Chart from '@/components/common/Chart'
 export default {
     name: 'novelList',
-    components: {Chart},
+    components: {
+        chart:Chart
+    },
     data() {
         return {
 			query: {
@@ -111,7 +113,7 @@ export default {
 				size: 5
 			},
             chapter:{
-				content:{},
+				content:[],
 				totalElements: 0,
 				totalPages:0
             },
@@ -185,7 +187,7 @@ export default {
 		// 打开章节列表操作
 		handleEdit(index, row) {
 			this.form = row;
-			this.editVisible = true;
+            this.editVisible = true;
 			this.getChapter(row.id);
 			this.getVisit(row.id);
 			this.now_id = row.id

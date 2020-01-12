@@ -115,8 +115,11 @@
         props:['id'],
         mounted () {
             this.bookId = this.id
-            this.getVisit()
+            this.timeValue[0] = new Date();
+            this.timeValue[1] = new Date()
+            this.timeValue[0].setTime(this.timeValue[0].getTime() - 3600 * 1000 * 24 * 7)
             this.title = '最近七天每天的用户访问量'
+            this.getVisit()
         }
     }
 </script>
