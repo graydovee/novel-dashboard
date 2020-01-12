@@ -8,34 +8,67 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="form-box">
-                <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="书名">
-                        <el-input v-model="form.bookName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="作者">
-                        <el-input v-model="form.authorName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="首章地址">
-                        <el-input v-model="form.url"></el-input>
-                    </el-form-item>
-                    <el-form-item label="规则">
-                        <el-select v-model="form.matchRexId" placeholder="请选择">
-                            <el-option v-for="item in rex" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                        </el-select>
-                        <el-button
-                                type="primary"
-                                icon="el-icon-refresh"
-                                class="refresh"
-                                @click="refresh"
-                        >刷新</el-button>
-                    </el-form-item>
 
-                    <el-form-item>
-                        <el-button type="primary" @click="onSubmit">开始爬取</el-button>
-                        <el-button @click="reset">取消</el-button>
-                    </el-form-item>
-                </el-form>
+            <el-row>
+                <el-col :span="3">
+                    <el-image :src="form.coverUrl" class="cover">
+                        <div slot="error" class="image-slot image-bg">
+                        </div>
+                    </el-image>
+                </el-col>
+                <el-col :span="12">
+                    <div class="form-box">
+                        <el-form ref="form" :model="form" label-width="80px">
+                            <el-form-item label="书名">
+                                <el-input v-model="form.bookName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="作者">
+                                <el-input v-model="form.authorName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="简介">
+                                <el-input v-model="form.introduce"></el-input>
+                            </el-form-item>
+                            <el-form-item label="封面地址">
+                                <el-input v-model="form.coverUrl"></el-input>
+                            </el-form-item>
+                            <el-form-item label="首章地址">
+                                <el-input v-model="form.firstChapterUrl"></el-input>
+                            </el-form-item>
+                            <el-form-item label="规则">
+                                <el-select v-model="form.matchRexId" placeholder="请选择">
+                                    <el-option v-for="item in rex" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                </el-select>
+                                <el-button
+                                        type="primary"
+                                        icon="el-icon-refresh"
+                                        class="refresh"
+                                        @click="refresh"
+                                >刷新</el-button>
+                            </el-form-item>
+
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">开始爬取</el-button>
+                                <el-button @click="reset">取消</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+                <el-col :span="6" :offset="3">
+                    <el-form>
+                        <el-form-item label="主页地址:">
+                            <el-input v-model="url"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="getIndex">自动填充</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+        </div>
+        <div class="container" v-if="showChapters">
+            <div style="margin: 20px">点击选择首章</div>
+            <div>
+                <el-button v-for="chapter in chapters" class="chapter" :title="chapter.title" style="margin: 0 10px 0 0" @click="form.firstChapterUrl=chapter.url">{{chapter.title}}</el-button>
             </div>
         </div>
     </div>
@@ -47,17 +80,22 @@ export default {
     data() {
         return {
             form:{},
-            rex:[]
+            rex:[],
+            url: 'http://www.biquge.tv/2_2491/',
+            chapters:[],
+            showChapters: false
         };
     },
     created(){
     	this.getRex();
 		if(process.env.NODE_ENV === 'development')
 			this.form = {
-				bookName: '牧神记',
-				authorName: '宅猪',
-				url:'http://www.biquge001.com/Book/16/16935/12799783.html',
-				matchRexId: '',
+				bookName: '',
+				authorName: '',
+                firstChapterUrl:'',
+				coverUrl:'',
+                introduce:'',
+                matchRexId: '',
 			};
     },
     methods: {
@@ -80,12 +118,31 @@ export default {
 		},
         reset(){
         	this.form = {
-				bookName: '',
-				authorName: '',
-				url:'',
-				encode:'',
-				matchRexId: '',
+                bookName: '',
+                authorName: '',
+                firstChapterUrl:'',
+                coverUrl:'',
+                introduce:'',
+                matchRexId: '',
 			}
+			this.url = '';
+            this.chapters = [];
+            this.showChapters = false;
+        },
+        getIndex(){
+		    let param = {
+		        url: this.url
+            }
+            this.$axios.post("/admin/index", param).then(res => {
+                let data = res.data.data
+                this.form.bookName = data.bookName;
+                this.form.authorName = data.authorName;
+                this.form.coverUrl = data.coverUrl;
+                this.form.introduce = data.introduce;
+                this.form.matchRexId = data.matchRexId;
+                this.chapters = data.chapters;
+                this.showChapters = true;
+            });
         }
     },
 };
@@ -93,5 +150,23 @@ export default {
 <style>
     .refresh{
         margin-left: 10px;
+    }
+
+    .cover {
+        margin: 20% 15%;
+        width: 120px;
+        height: 150px;
+    }
+    .image-bg{
+        width: 120px;
+        height: 150px;
+        background-color: #F5F7FA;
+    }
+
+    .chapter{
+        width: 150px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        margin: 0;
     }
 </style>
