@@ -68,7 +68,7 @@
         <div class="container" v-if="showChapters">
             <div style="margin: 20px">点击选择首章</div>
             <div>
-                <el-button v-for="chapter in chapters" class="chapter" :title="chapter.title" style="margin: 0 10px 0 0" @click="form.firstChapterUrl=chapter.url">{{chapter.title}}</el-button>
+                <el-button v-for="chapter in chapters" class="chapter" :title="chapter.title" style="margin: 0 10px 0 0" @click="setFirstChapter(chapter.url)">{{chapter.title}}</el-button>
             </div>
         </div>
     </div>
@@ -79,9 +79,16 @@ export default {
     name: 'SpiderForm',
     data() {
         return {
-            form:{},
+            form:{
+                bookName: '',
+                authorName: '',
+                firstChapterUrl:'',
+                coverUrl:'',
+                introduce:'',
+                matchRexId: '',
+            },
             rex:[],
-            url: 'http://www.biquge.tv/2_2491/',
+            url: '',
             chapters:[],
             showChapters: false
         };
@@ -89,14 +96,7 @@ export default {
     created(){
     	this.getRex();
 		if(process.env.NODE_ENV === 'development')
-			this.form = {
-				bookName: '',
-				authorName: '',
-                firstChapterUrl:'',
-				coverUrl:'',
-                introduce:'',
-                matchRexId: '',
-			};
+			this.url = "http://www.biquge.tv/2_2491/"
     },
     methods: {
 		refresh(){
@@ -133,7 +133,7 @@ export default {
 		    let param = {
 		        url: this.url
             }
-            this.$axios.post("/admin/index", param).then(res => {
+            this.$axios.post("/spider/index", param).then(res => {
                 let data = res.data.data
                 this.form.bookName = data.bookName;
                 this.form.authorName = data.authorName;
@@ -143,6 +143,9 @@ export default {
                 this.chapters = data.chapters;
                 this.showChapters = true;
             });
+        },
+        setFirstChapter(firstChapterUrl){
+            this.form.firstChapterUrl = firstChapterUrl;
         }
     },
 };
