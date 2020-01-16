@@ -186,6 +186,7 @@ export default {
         },
 		// 打开章节列表操作
 		handleEdit(index, row) {
+            this.query.index = 1
 			this.form = row;
             this.editVisible = true;
 			this.getChapter(row.id);
@@ -193,6 +194,7 @@ export default {
 			this.now_id = row.id
 		},
         handleVisit() {
+
             this.editVisible = false
             this.visitVisible = true
         },

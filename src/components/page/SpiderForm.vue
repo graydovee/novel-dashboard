@@ -11,7 +11,7 @@
 
             <el-row>
                 <el-col :span="3">
-                    <el-image :src="form.coverUrl" class="cover">
+                    <el-image :src="form.coverUrl" class="cover" v-loading="image_loading">
                         <div slot="error" class="image-slot image-bg">
                         </div>
                     </el-image>
@@ -55,15 +55,34 @@
                 </el-col>
                 <el-col :span="6" :offset="3">
                     <el-form>
-                        <el-form-item label="主页地址:">
-                            <el-input v-model="url"></el-input>
+                        <el-form-item label="自定义爬取:">
+                            <el-switch v-model="advance"></el-switch>
                         </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="getIndex">自动填充</el-button>
-                        </el-form-item>
+                        <div v-if="advance">
+                            <el-form-item label="主页地址:">
+                                <el-input v-model="url"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="getIndex">自动填充</el-button>
+                            </el-form-item>
+                        </div>
+                        <div v-else="advance">
+                            <el-form-item label="书名或作者:">
+                                <el-input v-model="findStr" class="handle-input mr10"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                            </el-form-item>
+                        </div>
                     </el-form>
                 </el-col>
             </el-row>
+        </div>
+        <div class="container" v-if="!advance">
+            <div style="margin: 20px">点击选择小说</div>
+            <div>
+                <el-button v-for="book in books" class="chapter" :title="book.title" style="margin: 0 10px 0 0" @click="choose(book.url)">{{book.title}}</el-button>
+            </div>
         </div>
         <div class="container" v-if="showChapters">
             <div style="margin: 20px">点击选择首章</div>
@@ -87,7 +106,11 @@ export default {
                 introduce:'',
                 matchRexId: '',
             },
+            advance: false,
             rex:[],
+            findStr: '',
+            books: [],
+            image_loading: false,
             url: '',
             chapters:[],
             showChapters: false
@@ -129,9 +152,11 @@ export default {
             this.chapters = [];
             this.showChapters = false;
         },
-        getIndex(){
+        getIndex(url){
+		    if (!url)
+		        url = this.url
 		    let param = {
-		        url: this.url
+		        url: url
             }
             this.$axios.post("/spider/index", param).then(res => {
                 let data = res.data.data
@@ -142,10 +167,27 @@ export default {
                 this.form.matchRexId = data.matchRexId;
                 this.chapters = data.chapters;
                 this.showChapters = true;
-            });
+                this.image_loading = false;
+            }).catch(err => {
+                this.$message.error("获取失败")
+                this.image_loading = false;
+            })
         },
         setFirstChapter(firstChapterUrl){
             this.form.firstChapterUrl = firstChapterUrl;
+        },
+        search(){
+		    let data = {
+		        name: this.findStr
+            }
+            this.$axios.post('/spider/search', data).then(res=>{
+                this.books = res.data.data;
+                console.log(res.data)
+            })
+        },
+        choose(url){
+		    this.image_loading = true
+		    this.getIndex(url);
         }
     },
 };
