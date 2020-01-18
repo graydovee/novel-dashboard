@@ -63,7 +63,7 @@
                                 <el-input v-model="url"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="getIndex">自动填充</el-button>
+                                <el-button type="primary" @click="getIndex(url)">自动填充</el-button>
                             </el-form-item>
                         </div>
                         <div v-else="advance">
@@ -154,7 +154,8 @@ export default {
         },
         getIndex(url){
 		    if (!url)
-		        url = this.url
+		        return
+            this.image_loading = true
 		    let param = {
 		        url: url
             }
@@ -186,7 +187,6 @@ export default {
             })
         },
         choose(url){
-		    this.image_loading = true
 		    this.getIndex(url);
         }
     },
