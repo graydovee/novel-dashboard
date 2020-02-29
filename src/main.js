@@ -6,10 +6,11 @@ import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
 import './assets/css/icon.css';
 import 'babel-polyfill';
+import './components/common/bus'
 
-import $axios from './utils/axios'
+import axios from './utils/request'
 
-Vue.prototype.$axios = $axios;
+Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {
     size: 'small'
@@ -26,8 +27,8 @@ router.beforeEach((to, from, next) => {
         const roles = JSON.parse(user_info).authorities;
         let role = {}
         let need = '';
-        for (let i in roles) {
-            role[roles[i]] = true;
+        for (let authority of roles) {
+            role[authority.name] = true;
         }
         if(to.path==='/userList'){
             need =  'ROLE_ROOT'
@@ -47,7 +48,9 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-new Vue({
+let vm = new Vue({
     router,
     render: h => h(App)
 }).$mount('#app');
+
+

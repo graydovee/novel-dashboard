@@ -90,7 +90,7 @@
                     bookId: this.bookId
                 }
                 this.$axios.get('/admin/visit', param).then(res => {
-                    let get_data = res.data.data
+                    let get_data = res.data
                     let temp = {}
                     for(let i = 0; i < get_data.length; ++i){
                         temp[get_data[i].date] = get_data[i].visit

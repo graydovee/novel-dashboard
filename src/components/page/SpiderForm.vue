@@ -124,7 +124,7 @@ export default {
     methods: {
 		refresh(){
 			this.$axios.get("/admin/rex").then(res => {
-				this.rex = res.data.data;
+				this.rex = res.data;
 				this.$message.success("刷新成功！")
 			});
 		},
@@ -136,7 +136,7 @@ export default {
         },
 		getRex() {
 			this.$axios.get("/admin/rex").then(res => {
-				this.rex = res.data.data;
+				this.rex = res.data;
 			});
 		},
         reset(){
@@ -160,7 +160,7 @@ export default {
 		        url: url
             }
             this.$axios.post("/spider/index", param).then(res => {
-                let data = res.data.data
+                let data = res.data
                 this.form.bookName = data.bookName;
                 this.form.authorName = data.authorName;
                 this.form.coverUrl = data.coverUrl;
@@ -182,7 +182,7 @@ export default {
 		        name: this.findStr
             }
             this.$axios.post('/spider/search', data).then(res=>{
-                this.books = res.data.data;
+                this.books = res.data;
                 console.log(res.data)
             })
         },

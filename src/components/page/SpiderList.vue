@@ -149,7 +149,7 @@ export default {
                 mod: this.query.mod
             }
         	this.$axios.get('/admin/spider_info', data).then(res=>{
-                let page = res.data.data;
+                let page = res.data;
                 this.tableData = page.content;
                 this.totalElements = page.totalElements;
             })
@@ -166,7 +166,7 @@ export default {
                 mod: this.query.mod
             }
             this.$axios.get('/admin/spider_info', data).then(res=>{
-                let page = res.data.data;
+                let page = res.data;
                 this.tableData = page.content;
                 this.totalElements = page.totalElements;
                 this.$message.success("刷新成功！")
@@ -178,7 +178,7 @@ export default {
 			})
 			.then(() => {
 				this.$axios.post('/admin/update?id='+this.form.id).then(res=>{
-					if(res.data.code===200){
+					if(res.code===200){
 						this.$message.success('操作成功');
 						this.getData();
 					}else{
@@ -202,7 +202,7 @@ export default {
             })
                 .then(() => {
                     this.$axios.delete('/admin/spider_info?id='+row.id).then(res=>{
-                    	if(res.data.code===200){
+                    	if(res.code===200){
                     		this.$message.success('操作成功');
                     		this.getData();
                         }else{
@@ -225,7 +225,7 @@ export default {
                     refresh: 1
                 }
 				this.$axios.delete('/admin/spider_info', data).then(res=>{
-					if(res.data.code===200){
+					if(res.code===200){
 						this.$message.success('操作成功');
 						this.getData();
 					}else{
@@ -250,7 +250,7 @@ export default {
         // 保存编辑
         saveEdit() {
         	this.$axios.put('/admin/spider_info',this.form).then(res=>{
-        		if(res.data.code===200){
+        		if(res.code===200){
 					this.editVisible = false;
 					this.getData();
 					this.$message.success("保存成功");
@@ -263,7 +263,7 @@ export default {
         },
 		getRex() {
 			this.$axios.get("/admin/rex").then(res => {
-				this.rex = res.data.data;
+				this.rex = res.data;
 			});
 		}
     }

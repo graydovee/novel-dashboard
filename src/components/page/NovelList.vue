@@ -144,7 +144,7 @@ export default {
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
-                let page = res.data.data;
+                let page = res.data;
                 this.book = page.content;
                 this.totalElements = page.totalElements;
             });
@@ -156,7 +156,7 @@ export default {
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
-                let page = res.data.data;
+                let page = res.data;
                 this.book = page.content;
                 this.totalElements = page.totalElements;
                 this.$message.success("刷新成功！")
@@ -203,7 +203,7 @@ export default {
         },
         getVisit(book_id){
 			this.$axios.get('/visit?bookId='+book_id).then(res=>{
-				this.visit = res.data.data;
+				this.visit = res.data;
             });
         },
         getChapter(id){
@@ -216,7 +216,7 @@ export default {
                 size: this.query.size
             }
         	this.$axios.get('/chapter',data).then(res=>{
-        		this.chapter = res.data.data;
+        		this.chapter = res.data;
             })
         },
 		// 分页导航
