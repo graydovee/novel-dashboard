@@ -3,7 +3,7 @@ import $qs from 'qs'
 import router from '../router'
 import bus from '../components/common/bus'
 
-let baseURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8090' : 'https://admin.ndovel.com'
+let baseURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8090' : ''
 
 let service = axios.create({
     baseURL: baseURL,
