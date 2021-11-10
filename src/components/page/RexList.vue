@@ -113,7 +113,7 @@
                     size: this.query.size
                 }
 				this.$axios.get("/admin/rex", data).then(res => {
-                    let page = res.data.data;
+                    let page = res.data;
                     this.rex = page.content;
                     this.totalElements = page.totalElements;
 				});
@@ -124,7 +124,7 @@
                     size: this.query.size
                 }
 				this.$axios.get("/admin/rex", data).then(res => {
-                    let page = res.data.data;
+                    let page = res.data;
                     this.rex = page.content;
                     this.totalElements = page.totalElements;
 					this.$message.success("刷新成功！")
@@ -138,7 +138,7 @@
 				})
 				.then(() => {
 					this.$axios.delete("/admin/rex?id=" + row.id).then(res => {
-						this.rex = res.data.data;
+						this.rex = res.data;
 						this.$message.success('删除成功');
 						this.getRex();
 					})

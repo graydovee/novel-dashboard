@@ -37,7 +37,7 @@
                                 icon="el-icon-lx-sort"
                                 class="green"
                                 @click="handleEdit(scope.$index, scope.row)"
-                        >章节</el-button>
+                        >详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -75,7 +75,8 @@
                 <el-table-column prop="createTime" label="爬取时间"></el-table-column>
             </el-table>
             <p class="visit">
-                访问量：{{visit}}
+                阅读量：{{visit}}
+                <el-button type="primary" style="margin-left: 10px" @click="handleVisit">详情</el-button>
             </p>
 
             <div class="pagination">
@@ -90,12 +91,20 @@
             </div>
         </el-dialog>
 
+        <el-dialog title="阅读量统计" :visible.sync="visitVisible" width="50%" @close="handleVisitClose">
+            <chart :id="now_id" v-if="visitVisible"></chart>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
+import Chart from '@/components/common/Chart'
 export default {
     name: 'novelList',
+    components: {
+        chart:Chart
+    },
     data() {
         return {
 			query: {
@@ -104,12 +113,14 @@ export default {
 				size: 5
 			},
             chapter:{
-				content:{},
+				content:[],
 				totalElements: 0,
 				totalPages:0
             },
             book:[],
             editVisible: false,
+            visitVisible: false,
+            now_id: null,
             findStr:'',
             form:{},
             visit:0,
@@ -133,7 +144,7 @@ export default {
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
-                let page = res.data.data;
+                let page = res.data;
                 this.book = page.content;
                 this.totalElements = page.totalElements;
             });
@@ -145,7 +156,7 @@ export default {
                 size: this.query_book.size
             }
             this.$axios.get("/book", data).then(res => {
-                let page = res.data.data;
+                let page = res.data;
                 this.book = page.content;
                 this.totalElements = page.totalElements;
                 this.$message.success("刷新成功！")
@@ -175,14 +186,24 @@ export default {
         },
 		// 打开章节列表操作
 		handleEdit(index, row) {
+            this.query.index = 1
 			this.form = row;
-			this.editVisible = true;
+            this.editVisible = true;
 			this.getChapter(row.id);
 			this.getVisit(row.id);
+			this.now_id = row.id
 		},
+        handleVisit() {
+
+            this.editVisible = false
+            this.visitVisible = true
+        },
+        handleVisitClose() {
+            this.editVisible = true
+        },
         getVisit(book_id){
 			this.$axios.get('/visit?bookId='+book_id).then(res=>{
-				this.visit = res.data.data;
+				this.visit = res.data;
             });
         },
         getChapter(id){
@@ -195,7 +216,7 @@ export default {
                 size: this.query.size
             }
         	this.$axios.get('/chapter',data).then(res=>{
-        		this.chapter = res.data.data;
+        		this.chapter = res.data;
             })
         },
 		// 分页导航

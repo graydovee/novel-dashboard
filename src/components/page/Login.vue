@@ -34,7 +34,6 @@ export default {
             param: {
                 username: '',
                 password: '',
-                grant_type: 'password'
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -45,21 +44,19 @@ export default {
     methods: {
         submitForm() {
             this.$refs.login.validate(valid => {
+                localStorage.removeItem('token')
                 if (valid) {
-					localStorage.setItem("access_token", 'Basic ZS1ib29rOjEyMzQ1Ng==');
                     this.$axios.post("/login",this.param).then(res=>{
-                        let data = res.data;
-                        localStorage.setItem("access_token", data.access_token);
-                        localStorage.setItem("refresh_token", data.refresh_token);
-
-
-                        localStorage.setItem("user_info", JSON.stringify(jwt.decode(data.access_token)));
+                        localStorage.setItem("token", JSON.stringify(res));
+                        let user_info = jwt.decode(res.token).sub
+                        localStorage.setItem("user_info", user_info);
                         this.$message.success('登录成功');
                         this.$router.push('/');
                     }).catch(err=>{
-						let data = err.response.data;
+                        console.log(err)
+						let data = err.response;
 						if (data)
-                            this.$message.error(data.data);
+                            this.$message.error(data.data.data);
 						else
 						    this.$message.error('登录失败');
                     })

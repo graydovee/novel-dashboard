@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         username() {
-            return this.user.user_name ? this.user.user_name : "---";
+            return this.user.username ? this.user.username : "---";
         }
     },
     methods: {

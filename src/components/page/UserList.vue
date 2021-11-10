@@ -22,7 +22,7 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="username" label="用户名"></el-table-column>
                 <el-table-column label="身份" align="center">
                     <template slot-scope="scope">
@@ -181,12 +181,12 @@ export default {
         // 获取数据
         getRoles(){
 			this.$axios.get('/root/role').then(res=>{
-				this.roleData = res.data.data;
+				this.roleData = res.data;
 			})
         },
         getData() {
             this.$axios.get('/root/user').then(res=>{
-				this.tableData = res.data.data;
+				this.tableData = res.data;
             })
         },
         isme(usr){
@@ -235,7 +235,7 @@ export default {
                     password: this.form.password
                 }
 				this.$axios.put('/root/user',data).then(res=>{
-					if(res.data.code===200){
+					if(res.code===200){
 						this.editVisible = false;
 						this.$message.success('修改成功');
                     }else{
@@ -260,7 +260,7 @@ export default {
 					password: this.form.password
 				}
 				this.$axios.post('/root/register',data).then(res=>{
-					if(res.data.code===200){
+					if(res.code===200){
 						this.$message.success('新增用户成功');
 						this.getData();
 						this.addVisible = false;
@@ -287,7 +287,7 @@ export default {
 				roleId: this.roleId
 			}
 			this.$axios.put('/root/role',data).then(res=>{
-				if(res.data.code===200){
+				if(res.code===200){
 					this.roleVisible = false;
 					this.$message.success('权限修改成功');
 					this.getData();

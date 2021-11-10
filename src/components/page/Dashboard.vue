@@ -10,7 +10,7 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">创建时间：<span>{{user.create_time}}</span></div>
+                    <div class="user-info-list">创建时间：<span>{{user.createTime}}</span></div>
                     <div class="user-info-list">欢迎回来！</div>
                 </el-card>
             </el-col>
@@ -29,17 +29,27 @@
                     </el-col>
                 </el-row>
             </el-col>
+
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card shadow="hover">
+                    <chart></chart>
+                </el-card>
+            </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
+    import Chart from '@/components/common/Chart'
     export default {
         name: 'dashboard',
         data() {
             return {
 				user: {},
-				visit:0
+				visit: 0,
+                data: {}
             }
         },
         computed: {
@@ -47,11 +57,11 @@
             	let ret = '普通用户';
             	if(this.user.authorities){
             		let authorities = this.user.authorities;
-            		for(let i in authorities){
-            			if(authorities[i] === "ROLE_USER"){
+            		for(let a of authorities){
+            			if(a.name === "ROLE_USER"){
             				if(ret !== '超级管理员' )
 							    ret = '管理员';
-                        }else if (authorities[i] === "ROLE_ROOT"){
+                        }else if (a.authority === "ROLE_ROOT"){
             				ret = '超级管理员';
                         }
                     }
@@ -59,14 +69,17 @@
                 return ret;
             },
 			username() {
-				return this.user.user_name ? this.user.user_name : "---";
+				return this.user.username ? this.user.username : "---";
 			}
         },
         mounted(){
 			this.user = JSON.parse(localStorage.getItem("user_info"));
 			this.$axios.get('visit').then(res=>{
-				this.visit = res.data.data;
+				this.visit = res.data;
             })
+        },
+        components: {
+            Chart
         }
     }
 
@@ -154,6 +167,5 @@
     .mgb20 {
         margin-bottom: 20px;
     }
-
 
 </style>
